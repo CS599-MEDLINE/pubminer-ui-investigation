@@ -22,6 +22,11 @@
  - In your browser, navigate to [http://localhost:8081](http://localhost:8081)
 
 ### Additional Information
+#### Running Integration Tests with Cyprus
+ - ensure the application and database are running
+ - run `npm run cyprus:open`
+ - select `search_spec.js` from the Integration Test list. The tests should automatically start executing
+
 #### Postgres
  - To connect to `Postgres` via `psql` client install `psql`, then run `psql -h localhost -p 5432 -d pubminer -U root_user --password root_pw`
 
