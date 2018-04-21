@@ -8,9 +8,9 @@ block scripts
     script(src="scripts/pubminer.js")
 block content
     if results.items.length == 0
-        p(style='margin: 24px 0px 0px 20px; font-style: italic;') No results found for "#{qryResult.searchTerm}"
+        p(id="resultsCount" style='margin: 24px 0px 0px 20px; font-style: italic;') No results found for "#{qryResult.searchTerm}"
     else
-        p(style='margin: 24px 0px 0px 20px; font-style: italic;') Displaying #{qryResult.itemsReturned} of #{qryResult.itemsFound} results found for "#{qryResult.searchTerm}"
+        p(id="resultsCount" style='margin: 24px 0px 0px 20px; font-style: italic;') Displaying #{qryResult.itemsReturned} of #{qryResult.itemsFound} results found for "#{qryResult.searchTerm}"
         input(type="hidden" id="webenv" value=qryResult.webenv)
         input(type="hidden" id="querykey" value=qryResult.querykey)
         input(type="hidden" id="nextRow" value=nextRow)

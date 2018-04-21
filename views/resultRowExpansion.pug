@@ -7,16 +7,18 @@ div(class="list-group-item-container container-fluid hidden")
     div(class="close")
         span(class="pficon pficon-close")
     div(style="padding-bottom: 8px")
+
         if (item.pubdate) 
             span(style="padding-right: 10px") Publication Date:
                 span(style="padding-left: 3px; font-weight: bold")= item.pubdate
         each articleid in item.articleids
             if (articleid.idtype == "pmc") && (articleid.value != 0)
                 span(style="padding-right: 10px") PubMed Central:&nbsp;
-                    a(target="_blank" href=`https://www.ncbi.nlm.nih.gov/pmc/${articleid.value}`) #{articleid.value}
+                    a(class="pmcids" target="_blank" href=`https://www.ncbi.nlm.nih.gov/pmc/${articleid.value}`) #{articleid.value}
             if (articleid.idtype == "pubmed") && (articleid.value != 0)
                 span(style="padding-right: 10px") PubMed:&nbsp;
-                    a(target="_blank" href=`https://www.ncbi.nlm.nih.gov/pubmed/${articleid.value}`) #{articleid.value}
+                    a(class="pmids" target="_blank" href=`https://www.ncbi.nlm.nih.gov/pubmed/${articleid.value}`) #{articleid.value}
+
     //- Accordion Control
     div(class="panel-group" id=`accordion-markup${item.uid}` style="width:100%")
         include accordionAbstract
