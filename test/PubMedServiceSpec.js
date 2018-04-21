@@ -29,7 +29,6 @@ describe('PubMedService', function() {
            const response = pmSvc.search(searchTerm, queryOptions);
 
            return response.then( result => {
-               console.log(`processing response ${JSON.stringify(result)}`);
 
                assert.equal(
                    result.webenv,

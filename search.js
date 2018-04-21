@@ -3,6 +3,7 @@ const httpRequest = require('request');
 const xmlSimple   = require('xml-simple');
 const config =  require('config');
 const DocumentHelper = require('./DocumentHelper');
+const QueryHelper = require('./QueryHelper');
 
 const demoSvc = function() {
     const awsConfig = config.get('AwsConfig')
@@ -28,15 +29,20 @@ let pubMedApi = {
     search : function(searchParams, callback) {
 
         let searchTerm = searchParams.searchTerm;
-        let pubDateFilter = searchParams.pubDateFilter; // all/prior1/prior2/prior3
+        let pubDateFilter = searchParams.pubDateFilter;
 
-        if (typeof searchTerm === "undefined" || searchTerm.trim().length === 0) {
+        if (QueryHelper.isEmptyTerm(searchTerm)) {
             // signal the caller that the (empty) results are ready
             callback({searchTerm: '', itemsFound: 0, itemsReturned: 0, items: []});
-
         } else {
-            console.log(`calling esearch for ${searchTerm}...`);
-            const query = `(${config.get('PubMedService').searchFilter}) AND (${searchTerm})`;
+
+            const query = QueryHelper.combineSearchTerms([
+                searchTerm,
+                config.get('PubMedService').searchFilter,
+                QueryHelper.getDateFilter(pubDateFilter)
+            ]);
+
+            console.log(`calling esearch for ${query}...`);
             pmSvc.search(query, {
                 db: 'pubmed',
             }).then(results => {
