@@ -15,6 +15,7 @@ router.get('/', (request, response) => {
                                         "qryResult": queryResult});
         } else {
             // Get summaries for the first set of result rows
+            console.log(`results.js calling getSummaries ${JSON.stringify(queryResult)}`);
             pubMedQuery.getSummaries(queryResult.webenv, queryResult.querykey, 0, rowRequestSize, (results) => {
 
                 // Render the 'results' view using query results
