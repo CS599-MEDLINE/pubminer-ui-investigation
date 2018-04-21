@@ -11,9 +11,9 @@ div(class="list-group-item-container container-fluid hidden")
             span(class="exp-data-title") Publication Date:
                 span(class="exp-data-date")= item.pubdate
         span(class="exp-data-title") PubMed Central:&nbsp;
-            a(target="_blank" href=`https://www.ncbi.nlm.nih.gov/pmc/${item.pmcid}`) #{item.pmcid}
+            a(class="pmcids" target="_blank" href=`https://www.ncbi.nlm.nih.gov/pmc/${item.pmcid}`) #{item.pmcid}
         span(class="exp-data-title") PubMed:&nbsp;
-            a(target="_blank" href=`https://www.ncbi.nlm.nih.gov/pubmed/${item.pmid}`) #{item.pmid}
+            a(class="pmids" target="_blank" href=`https://www.ncbi.nlm.nih.gov/pubmed/${item.pmid}`) #{item.pmid}
     //- Accordion Control
     div(class="panel-group pm-accordion" id=`accordion-markup${item.uid}`)
         include accordionAbstract
