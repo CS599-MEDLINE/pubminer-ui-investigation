@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const DocHelper = require('../DocumentHelper');
+const Errors = require('../Errors');
 const fs = require('fs');
 const fsOptions = {
     encoding: 'utf-8',
@@ -9,6 +10,18 @@ const fsOptions = {
 };
 
 describe('DocumentHelper', function () {
+
+    describe('.stripLetterFromId', function () {
+        it('returns numeric portion of the identifier', function () {
+            const id = DocHelper.stripLettersFromId('PMC12345');
+            assert.strictEqual(id, '12345');
+        });
+
+        it('returns pure numeric identifiers unchanged', function () {
+           const id = DocHelper.stripLettersFromId('12345');
+           assert.strictEqual(id, '12345');
+        });
+    });
 
     describe('.extractAbstract', function () {
 
@@ -25,31 +38,46 @@ describe('DocumentHelper', function () {
 
     });
 
+    describe('.extractSearchResults', function () {
+
+        it('extracts meta information from NCBI search results', function () {
+            const results = require('./data/search/pubmed_search_success');
+            const query = 'my-search-term';
+            const er = DocHelper.extractSearchResults(results, query);
+            assert.strictEqual(er.itemsFound, parseInt(results.esearchresult.count));
+            assert.strictEqual(er.searchTerm, query);
+            assert.strictEqual(er.itemsReturned, results.esearchresult.idlist.length);
+            assert.strictEqual(er.webenv, results.esearchresult.webenv);
+            assert.strictEqual(er.querykey, results.esearchresult.querykey);
+        });
+    });
 
     describe('.getLinkedIdsByType', function () {
 
+        it('raises  uids field', function(){
+            const docResult = {
+                result: {
+                    notUids: null
+                }
+            };
+            assert.throws(function () {
+                return DocHelper.getLinkedIdsByType(docResult);
+            }, new Errors.InvalidDocumentFormatError(
+                new TypeError(`Cannot read property 'reduce' of undefined`)));
+        });
+
         it('returns a map of uids to id-type', function () {
+            const summary = require('./data/summary/pubmed-esummary-success.json');
+            const linkedIds = DocHelper.getLinkedIdsByType(summary, "pmc");
+            assert.strictEqual(linkedIds["29489680"], 'PMC5851734');
+            assert.strictEqual(linkedIds["29390338"], 'PMC5815750');
 
         });
 
         it('removes IDs without the linked ID type from the result', function () {
-
-        });
-
-    });
-
-    describe('.mergeDemographicAndSummaryResults', function () {
-
-        it('returns all items from the summary in the same order', function () {
-
-        });
-
-        it('includes demographic details where available', function () {
-
-        });
-
-        it('returns the expected attributes for each item', function () {
-
+            const summary = require('./data/summary/pubmed-esummary-success.json');
+            const linkedIds = DocHelper.getLinkedIdsByType(summary, "pmc");
+            assert.strictEqual(linkedIds["29603827"], undefined);
         });
 
     });
@@ -114,11 +142,26 @@ describe('DocumentHelper', function () {
                 lastIdx = idx;
             });
         });
-
-
     });
 
+    describe('.mergeDemographicAndSummaryResults', function () {
 
-    //TODO: add tests for other `DocumentHelper` methods
+        const demoDetails = require('./data/demographics/fake_demo_data.json');
+        const summary = require('./data/summary/pubmed-esummary-success.json');
 
+        it('returns all items from the summary in the same order', function () {
+            DocHelper.mergeDemographicAndSummaryResults(demoDetails, summary);
+            // TODO: add validations
+
+        });
+
+        it('includes demographic details where available', function () {
+
+        });
+
+        it('returns the expected attributes for each item', function () {
+
+        });
+
+    });
 });

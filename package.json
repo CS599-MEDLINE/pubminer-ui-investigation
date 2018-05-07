@@ -8,7 +8,7 @@
     "start-dev": "nodemon --inspect ./bin/www",
     "test": "mocha",
     "cypress:open": "cypress open",
-    "lint": "jshint . --exclude node_modules,bower_components,public,cypress",
+    "lint": "jshint . --exclude node_modules,bower_components,public,cypress,coverage",
     "cover": "istanbul cover _mocha"
   },
   "contributors": [

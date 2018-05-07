@@ -2,10 +2,6 @@
 
 class ErrorSeverity {
 
-    static get Success() {
-        return 3;
-    }
-
     static get Info() {
         return 2;
     }

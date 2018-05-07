@@ -25,7 +25,6 @@ describe('QueryTermHelper', function () {
 
     describe('.getDateFilter', function () {
 
-
         it('returns empty string for 0', function () {
             assert.strictEqual(QueryHelper.getDateFilter('0'), "");
         });

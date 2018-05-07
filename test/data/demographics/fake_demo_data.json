@@ -1,0 +1,28 @@
+{
+  "PMC5851734": {
+    "pmcid": "123",
+    "pmid": "123",
+    "table1": null,
+    "sentences": [
+      {
+        "section": "introduction",
+        "text": "asfasfasfasf"
+      },
+      {
+        "section": "results",
+        "text": "asfasfasdfasfasf"
+      }
+    ]
+  },
+  "PMC5815750": {
+    "pmcid": "456",
+    "pmid": "456",
+    "table1": "<table></table>",
+    "sentences": [
+      {
+        "section": "introduction",
+        "text": "asfasfasfasf"
+      }
+    ]
+  }
+}

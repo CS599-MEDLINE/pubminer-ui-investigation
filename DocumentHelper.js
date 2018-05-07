@@ -5,6 +5,10 @@ const Errors     = require('./Errors');
 
 class DocumentHelper {
 
+    static stripLettersFromId(pmcid) {
+        return pmcid.replace(/\D/g,'');
+    }
+
     /**
      * Returns a map of the summary's `uid`s to IDs of type `idType`. `uid`s that
      * to not have a linked ID of type `idType` are removed from the result set.
@@ -18,33 +22,23 @@ class DocumentHelper {
      * @return An object mapping the `uid` to the linked ID
      */
     static getLinkedIdsByType(summaryDocument, idType, xform) {
-        return summaryDocument
-            .result
-            .uids
-            .reduce((acc, uid) => {
-                const linkedId = summaryDocument
-                    .result[uid]
-                    .articleids
-                    .find(idObj => idObj.idtype === idType);
-
-                if (linkedId) {
-                    acc[uid] = xform(linkedId.value);
-                }
-
-                return acc;
-            }, {});
+        xform = xform || ((x) => x);
+        try {
+            return summaryDocument
+                .result
+                .uids
+                .reduce((acc, uid) => {
+                    const articleIds = (summaryDocument.result[uid].articleids || []);
+                    const linkedId = articleIds.find(idObj => idObj.idtype === idType);
+                    if (linkedId) {
+                        acc[uid] = xform(linkedId.value);
+                    }
+                    return acc;
+                }, {});
+        } catch(err) {
+            throw new Errors.InvalidDocumentFormatError(err);
+        }
     }
-
-    static searchErrorResponse(query, error) {
-        return {
-            searchTerm: query,
-            itemsFound: 0,
-            itemsReturned: 0,
-            error: error.message || 'An unexpected error occurred. Please try again.',
-            severity: error.severity || Errors.Severity.Danger
-        };
-    }
-
 
     /**
      * Merges the demographic data and esummary data from the PCM data into a PubMiner
@@ -55,7 +49,7 @@ class DocumentHelper {
     static mergeDemographicAndSummaryResults(demoDetails, summaryResults) {
         // TODO: Address #54 here
         const linkedIds = DocumentHelper
-            .getLinkedIdsByType(summaryResults, 'pmid', x => x);
+            .getLinkedIdsByType(summaryResults, 'pmid', this.stripLettersFromId);
         return summaryResults
             .result
             .uids
@@ -87,7 +81,6 @@ class DocumentHelper {
                 itemsReturned: parseInt(searchDocument.esearchresult.retmax)
             };
         } catch (err) {
-            console.error(`error extracting search results`, err);
             throw new Errors.InvalidDocumentFormatError(err);
         }
     }
@@ -110,7 +103,6 @@ class DocumentHelper {
             }
 
         } catch (err) {
-            console.error(`error extract env from link result`, err);
             throw new Errors.InvalidDocumentFormatError(err);
         }
     }
